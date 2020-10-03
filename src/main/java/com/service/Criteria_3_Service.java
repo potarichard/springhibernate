@@ -17,15 +17,20 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import com.entity.User;
-import com.query.EmailQuery;
-import com.query.HeightTypeQuery;
-import com.query.NameQuery;
+import com.query.NumberQuery;
 import com.query.NumberType;
+import com.query.StringQuery;
 import com.query.StringType;
 import com.query.UserQ;
+
+// if this wasnot on the classpath, then EntityManager em couldnot be autowired
+//@Repository
+//public interface UserDAO extends JpaRepository<User, Integer>{}
 
 @Service
 public class Criteria_3_Service {
@@ -43,34 +48,12 @@ public class Criteria_3_Service {
         CriteriaQuery<User> cq 	= cb.createQuery(User.class); 
         userquery.root 			= cq.from(User.class);
         
-        List<Predicate> predicates = new ArrayList<>();
-        
-        // need reflection userQ fields and values, and use factory for each NameQuery or EmialQuery ....
-        // if frontend sets name forexmpl, than need to set nameType if equal or just like it
-        // others as well, 
-        // but now its just hard coded
-        
-        // igazabol jo ez a hardcoded igy, nem kell a reflection, csak 3 tipus legyen queryre egy string egy integer es egy double, 
-        // sot meg egy boolean, es check all fields, es add the predicate
+        List<Predicate> predicates = new ArrayList<>();             
 
         Map<String, String> fileds 		= fieldsAndValues(userquery);
         Map<String, Enum<?>> fieldsType = fieldsTypeAndValues(userquery);
         
-        doSomething(fileds, fieldsType);
-        
-        // instead of this, loop on class's fields, check the corresponding userfield to it for the value
-        {
-            if(userquery.nameType != null) {
-            	predicates.add(new NameQuery().check(userquery, userquery.user.getName(), cb));
-            }
-            if(userquery.emailType != null) {
-            	predicates.add(new EmailQuery().check(userquery, userquery.user.getEmail(), cb));
-            }
-            if(userquery.heightType != null) {
-            	predicates.add(new HeightTypeQuery().check(userquery, String.valueOf(userquery.user.getHeight()), cb));
-            }
-        }
-
+        predicates = makeQueries(fileds, fieldsType, cb, userquery);
         
         cq.where(predicates.toArray(new Predicate[0]));
  
@@ -78,13 +61,20 @@ public class Criteria_3_Service {
         return query.getResultList();
     }
 	
-	private void doSomething(Map<String, String> fileds, Map<String, Enum<?>> fieldsType) 
+	
+	
+	
+	
+	
+	private List<Predicate> makeQueries(Map<String, String> fileds, Map<String, Enum<?>> fieldsType, CriteriaBuilder cb, UserQ userquery) 
 	{
+		List<Predicate> predicates = new ArrayList<>();
 		
 		fileds.entrySet().forEach(entry ->
 		{
 			String field = entry.getKey();
-			String field_type = entry.getValue().substring(entry.getValue().indexOf("+"));
+			String field_value = entry.getValue().substring(0, entry.getValue().indexOf("+"));
+//			String field_type = entry.getValue().substring(entry.getValue().indexOf("+"));
 			
 			Optional<Entry<String, Enum<?>>> matchedType = fieldsType.entrySet().stream()
 																.filter(e -> e.getKey().startsWith(field))		// thats why it is important to match field+Type
@@ -92,23 +82,28 @@ public class Criteria_3_Service {
 			
 			if(matchedType.isPresent()) 
 			{
-				Entry<String, Enum<?>> type = matchedType.get();
-								
+				Entry<String, Enum<?>> type = matchedType.get();								
+				
+				//ezt attenni factoryba, vagy kitalalni valami jo polymorphizmust
 				
 				if(type.getValue() instanceof StringType)
 				{
-					System.out.println("send info to factory: field is:" + field + ", type: " + field_type);
+					userquery.currentStringType = (StringType) type.getValue();
+					predicates.add(new StringQuery().check(userquery, field, field_value, cb));
 				}
 				
-				else if(type.getValue() instanceof NumberType)
+				else if(type.getValue() instanceof NumberType)		// azon belul lehet Integer, Float, Double ?
 				{
-					System.out.println("send info to factory: field is:" + field + ", type: " + field_type);
+					userquery.currentNumberType = (NumberType) type.getValue();
+					predicates.add(new NumberQuery().check(userquery, field, field_value, cb));
 				}
+				
+//				else if(type.getValue() instanceof BoolType) ilyen is kene
 			}
 			
 		});
 		
-		System.out.println();		
+		return predicates;		
 	}
 
 	// and also get fields .name so can loop, make a factory for string,int, double, and bool type
@@ -147,7 +142,7 @@ public class Criteria_3_Service {
 				{
 					field.setAccessible(true);
 					Object value = field.get(userquery);
-					if(value != null && !field.isAnnotationPresent(Deprecated.class) )
+					if(value != null && !field.isAnnotationPresent(Deprecated.class) )		// irni kene sajat annotaciot
 						map.put(field.getName(), (Enum<?>) value);
 				} 				
 				

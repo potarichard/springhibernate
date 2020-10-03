@@ -5,5 +5,5 @@ import javax.persistence.criteria.Predicate;
 
 public interface UserQuery {
 
-	public Predicate check(UserQ uq, String str, CriteriaBuilder cb);
+	public Predicate check(UserQ uq, String field, String value, CriteriaBuilder cb);
 }

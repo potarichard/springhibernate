@@ -20,4 +20,7 @@ public class UserQ {
 	public NumberType heightType;
 	public NumberType weightType;
 	public NumberType ageType;
+
+	public StringType currentStringType;	
+	public NumberType currentNumberType;
 }
