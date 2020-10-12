@@ -61,8 +61,11 @@ public class Criteria_3_Service {
         return query.getResultList();
     }
 	
-	
-	
+	// manual manytoone ?
+	public List<User> findUserJoinPosts(UserQ userquery) 
+	{
+		return null;		
+	}
 	
 	
 	

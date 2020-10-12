@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.entity.User;
 
+// extended for one way of criteria
 @Repository
 public interface UserDAOExtended extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User>{
 

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.entity.MarvelCharacter;
 import com.entity.User;
 import com.query.NumberType;
 import com.query.StringType;
@@ -15,6 +16,7 @@ import com.service.Criteria_0_Service;
 import com.service.Criteria_1_Service;
 import com.service.Criteria_2_Service;
 import com.service.Criteria_3_Service;
+import com.service.MarvelCharacterService;
 
 // focusing mainly findall, but with clever criterias!
 
@@ -30,6 +32,8 @@ public class OnlyOneController {
 	Criteria_2_Service c2s;	
 	@Autowired
 	Criteria_3_Service c3s;
+	@Autowired
+	MarvelCharacterService mcs;
 
 
 	// normal way, get all
@@ -38,6 +42,10 @@ public class OnlyOneController {
 		return c0s.getall();
 	}
 	
+	@GetMapping("/byID")
+	public User getUser() {
+		return c0s.getByID(1);
+	}
 	
 	@GetMapping("/crit_1")
 	public List<User> getUsersCriteria_1() {
@@ -72,6 +80,11 @@ public class OnlyOneController {
 		uq.heightType = NumberType.GREATER;
 		
 		return c3s.findUser(uq);
+	}
+	
+	@GetMapping("/marvel")
+	public List<MarvelCharacter> getMarvels() {
+		return mcs.findBySpecificationNormalized("Tony", "Stark");
 	}
 }
 

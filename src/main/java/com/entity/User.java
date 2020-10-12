@@ -1,9 +1,13 @@
 package com.entity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +15,10 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Entity
-@Table(name="User")
+@Table(name="TB_User")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)			// works if askd by id
+//@Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)	// what does it mean?
 public class User {
 
 	@Id

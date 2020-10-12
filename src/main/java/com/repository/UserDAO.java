@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import com.entity.User;
 
+// normal ways, this repository append the entitymanger to to classpath ?
 @Repository
 public interface UserDAO extends JpaRepository<User, Integer>{
 

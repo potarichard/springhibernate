@@ -23,8 +23,9 @@ public class Criteria_0_Service {
 		this.userdao = userdao;
 	}
 	
-	@PostConstruct
+//	@PostConstruct
 	public void init() {
+		
 		Stream.of(new User("Emma", "emma@email.com", "emmapwd", "emmafood", "white", 170, 60, 20),
 				new User("Bela", "bela@email.com", "belapwd", "belafood", "white", 175, 80, 24),
 				new User("Joso", "joso@email.com", "josopwd", "josofood", "yellow", 168, 82, 22),
@@ -34,5 +35,9 @@ public class Criteria_0_Service {
 	
 	public List<User> getall() {
 		return userdao.findAll();
+	}
+
+	public User getByID(int id) {
+		return userdao.findById(id).get();
 	}
 }

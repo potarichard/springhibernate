@@ -1,0 +1,41 @@
+spring:
+ datasource:
+  platform: postgres
+  url: jdbc:postgresql://localhost:5432/postgres
+  username: postgres
+  password: postgres
+ jpa:   
+  database: POSTGRESQL
+  hibernate:
+   ddl-auto: update
+  show-sql: true
+  properties:
+   javax:
+    persistence:
+     sharedCache:             
+      mode: ENABLE_SELECTIVE
+   hibernate:
+    cache:          
+     use_second_level_cache: true         # cache works if query by id !!!
+     use_query_cache: true
+     region:
+      factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+# h2:
+#  console:
+#   enabled: true

@@ -60,6 +60,30 @@ public class Criterias {
 		MvcResult mvc_result =  mockmvc.perform(get("/crit_5")).andReturn();			
 		
 		System.out.println(mvc_result.getResponse().getContentAsString());
+		
+		mvc_result =  mockmvc.perform(get("/crit_5")).andReturn();			
+		
+		System.out.println(mvc_result.getResponse().getContentAsString());
+		
+		mvc_result =  mockmvc.perform(get("/crit_5")).andReturn();			
+		
+		System.out.println(mvc_result.getResponse().getContentAsString());
+	}
+	
+	@Test
+	public void testTheControllerAll() throws Exception {
+		
+		MvcResult mvc_result =  mockmvc.perform(get("/all")).andReturn();			
+		
+		System.out.println(mvc_result.getResponse().getContentAsString());
+		
+		mvc_result =  mockmvc.perform(get("/all")).andReturn();			
+		
+		System.out.println(mvc_result.getResponse().getContentAsString());
+		
+		mvc_result =  mockmvc.perform(get("/all")).andReturn();			
+		
+		System.out.println(mvc_result.getResponse().getContentAsString());
 	}
 	
 }
